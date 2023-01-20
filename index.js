@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const PORT = 3000;
 const express = require('express');
 const server = express();
@@ -12,7 +14,16 @@ server.listen(PORT, () => {
 const morgan = require('morgan');
 server.use(morgan('dev'));
 
-server.use(express.json())
+server.use(express.json());
 
 const apiRouter = require('./api');
 server.use('/api', apiRouter);
+
+apiRouter.use((error, req, res, next) => {
+  res.send({
+    name: error.name,
+    message: error.message
+  });
+});
+
+module.exports = apiRouter;
